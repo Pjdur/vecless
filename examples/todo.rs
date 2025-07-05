@@ -5,7 +5,7 @@ fn main() {
     let mut args = env::args().skip(1).peekable();
 
     if args.peek().is_none() {
-        println!("Usage: cargo run --example todo_cli -- [--reverse] <task 1> <task 2> ...");
+        println!("Usage: cargo run --example todo -- [--reverse] <task 1> <task 2> ...");
         return;
     }
 
