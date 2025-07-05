@@ -5,12 +5,14 @@ use std::fmt::{self, Display};
 /// This list supports adding elements from any iterable while preserving
 /// their original order. It implements `Display` for easy printing and
 /// provides an iterator for traversal.
+#[derive(Clone)]
 pub struct List<T> {
     head: Link<T>,
 }
 
 type Link<T> = Option<Box<Node<T>>>;
 
+#[derive(Clone)]
 struct Node<T> {
     elem: T,
     next: Link<T>,
@@ -88,13 +90,30 @@ impl<T> List<T> {
     /// Reverses the list.
     ///
     /// This is used internally to restore the original order of added items.
-    fn reverse(mut self) -> Self {
+    pub fn reverse(mut self) -> Self {
         let mut reversed = List::new();
         while let Some(node) = self.head.take() {
             reversed = reversed.push(node.elem);
             self.head = node.next;
         }
         reversed
+    }
+
+    /// Returns the number of elements in the list.
+    ///
+    /// # Example
+    /// ```
+    /// use vecless::List;
+    /// let list = List::new().add([1, 2, 3]);
+    /// assert_eq!(list.len(), 3);
+    /// ```
+    pub fn len(&self) -> usize {
+        self.iter().count()
+    }
+
+    /// Returns `true` if the list contains no elements.
+    pub fn is_empty(&self) -> bool {
+        self.head.is_none()
     }
 
     /// Returns an iterator over the list's elements.
