@@ -1,2 +1,20 @@
 # vecless
-Vecless is a minimal, singly linked list in Rust that avoids `Vec` entirely. Implements `Display`, supports `.add(...)`, allowing for use with Rust's stable formatter, `{}` without needing newtype wrappers with `Vec`.
+
+**vecless** is a minimal, ergonomic, singly linked list implementation in Rust — no `Vec` required.
+
+## Features
+
+- ✅ No `Vec` or heap-allocated arrays
+- ✅ Supports `.add(...)` with any iterable
+- ✅ Implements `Display` for clean printing with `{}`
+
+## Example
+
+```rust
+use vecless::List;
+
+fn main() {
+    let list = List::new().add(["a", "b", "c"]);
+    println!("{}", list); // Output: [a, b, c]
+}
+```

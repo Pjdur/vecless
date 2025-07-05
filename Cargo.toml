@@ -1,0 +1,15 @@
+[package]
+name = "vecless"
+version = "0.1.0"
+edition = "2024"
+authors = ["Pjdur>"]
+description = "A minimal, Vec-free, singly linked list with Display support and ergonomic APIs."
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/yourusername/vecless"
+keywords = ["list", "linked-list", "no-vec", "data-structure"]
+categories = ["data-structures"]
+readme = "README.md"
+documentation = "https://pjdur.github.io/vecless"
+homepage = "https://github.com/Pjdur/vecless"
+
+[dependencies]
