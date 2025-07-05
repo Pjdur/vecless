@@ -1,6 +1,10 @@
 use std::fmt::{self, Display};
 
-/// A minimal singly linked list that avoids using `Vec`.
+/// A minimal, singly linked list that avoids using `Vec`.
+///
+/// This list supports adding elements from any iterable while preserving
+/// their original order. It implements `Display` for easy printing and
+/// provides an iterator for traversal.
 pub struct List<T> {
     head: Link<T>,
 }
@@ -13,12 +17,28 @@ struct Node<T> {
 }
 
 impl<T> List<T> {
-    /// Create a new empty list.
+    /// Creates a new, empty list.
+    ///
+    /// # Example
+    /// ```
+    /// use vecless::List;
+    /// let list: List<i32> = List::new();
+    /// ```
     pub fn new() -> Self {
         List { head: None }
     }
 
-    /// Add multiple elements to the list, preserving their original order.
+    /// Adds multiple elements to the list, preserving their original order.
+    ///
+    /// Accepts any type that implements `IntoIterator`, such as arrays,
+    /// vectors, ranges, or iterators.
+    ///
+    /// # Example
+    /// ```
+    /// use vecless::List;
+    /// let list = List::new().add(["a", "b", "c"]);
+    /// assert_eq!(format!("{}", list), "[a, b, c]");
+    /// ```
     pub fn add(self, items: impl IntoIterator<Item = T>) -> Self {
         let mut temp = List::new();
         for item in items {
@@ -27,7 +47,16 @@ impl<T> List<T> {
         self.append(temp.reverse())
     }
 
-    /// Push a single element to the front of the list.
+    /// Pushes a single element to the front of the list.
+    ///
+    /// This method reverses the order of elements if used repeatedly.
+    ///
+    /// # Example
+    /// ```
+    /// use vecless::List;
+    /// let list = List::new().push(1).push(2);
+    /// assert_eq!(format!("{}", list), "[2, 1]");
+    /// ```
     pub fn push(mut self, elem: T) -> Self {
         let new_node = Box::new(Node {
             elem,
@@ -37,7 +66,9 @@ impl<T> List<T> {
         self
     }
 
-    /// Append another list to the end of this one.
+    /// Appends another list to the end of this one.
+    ///
+    /// This is used internally by `.add()` to preserve order.
     fn append(mut self, mut other: Self) -> Self {
         if self.head.is_none() {
             return other;
@@ -54,7 +85,9 @@ impl<T> List<T> {
         self
     }
 
-    /// Reverse the list.
+    /// Reverses the list.
+    ///
+    /// This is used internally to restore the original order of added items.
     fn reverse(mut self) -> Self {
         let mut reversed = List::new();
         while let Some(node) = self.head.take() {
@@ -64,7 +97,15 @@ impl<T> List<T> {
         reversed
     }
 
-    /// Get an iterator over the list.
+    /// Returns an iterator over the list's elements.
+    ///
+    /// # Example
+    /// ```
+    /// use vecless::List;
+    /// let list = List::new().add([1, 2, 3]);
+    /// let sum: i32 = list.iter().copied().sum();
+    /// assert_eq!(sum, 6);
+    /// ```
     pub fn iter(&self) -> ListIter<'_, T> {
         ListIter {
             next: self.head.as_deref(),
@@ -72,7 +113,7 @@ impl<T> List<T> {
     }
 }
 
-/// Iterator for the list.
+/// An iterator over references to the elements of a `List`.
 pub struct ListIter<'a, T> {
     next: Option<&'a Node<T>>,
 }
@@ -88,8 +129,15 @@ impl<'a, T> Iterator for ListIter<'a, T> {
     }
 }
 
-/// Implement Display so the list can be printed with `{}`.
 impl<T: Display> Display for List<T> {
+    /// Formats the list using the standard list syntax: `[a, b, c]`.
+    ///
+    /// # Example
+    /// ```
+    /// use vecless::List;
+    /// let list = List::new().add(["x", "y"]);
+    /// assert_eq!(format!("{}", list), "[x, y]");
+    /// ```
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut first = true;
         write!(f, "[")?;
