@@ -1,3 +1,8 @@
+---
+title: Installation
+nav_order: 2
+---
+
 # 📦 Installation Guide for `vecless`
 
 Getting started with `vecless` is quick and easy. Follow the steps below to add it to your Rust project.

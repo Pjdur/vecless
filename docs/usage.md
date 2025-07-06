@@ -1,4 +1,9 @@
-# 📘 Usage Guide for `vecless`
+---
+title: Usage
+nav_order: 3
+---
+
+# Usage Guide for `vecless`
 
 Welcome to the `vecless` usage guide! This document provides a deeper look at how to use the crate effectively, with examples and explanations for each major feature.
 

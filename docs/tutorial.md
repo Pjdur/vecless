@@ -1,4 +1,9 @@
-# ✅ Building a To-Do App with `vecless`
+---
+title: Tutorial
+nav_order: 4
+---
+
+# Building a To-Do App with `vecless`
 
 In this tutorial, you'll build a command-line To-Do list app using the `vecless` crate. This app will:
 
