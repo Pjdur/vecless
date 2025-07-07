@@ -71,7 +71,7 @@ impl<T> List<T> {
     /// Appends another list to the end of this one.
     ///
     /// This is used internally by `.add()` to preserve order.
-    fn append(mut self, mut other: Self) -> Self {
+    pub fn append(mut self, mut other: Self) -> Self {
         if self.head.is_none() {
             return other;
         }
@@ -87,9 +87,6 @@ impl<T> List<T> {
         self
     }
 
-    /// Reverses the list.
-    ///
-    /// This is used internally to restore the original order of added items.
     pub fn reverse(mut self) -> Self {
         let mut reversed = List::new();
         while let Some(node) = self.head.take() {
@@ -132,9 +129,9 @@ impl<T> List<T> {
     }
 }
 
-/// An iterator over references to the elements of a `List`.
+/// A borrowing iterator over references to the elements of a `List<T>`.
 pub struct ListIter<'a, T> {
-    next: Option<&'a Node<T>>,
+    pub(crate) next: Option<&'a Node<T>>,
 }
 
 impl<'a, T> Iterator for ListIter<'a, T> {
@@ -145,6 +142,68 @@ impl<'a, T> Iterator for ListIter<'a, T> {
             self.next = node.next.as_deref();
             &node.elem
         })
+    }
+}
+
+/// A mutable borrowing iterator over a `List<T>`.
+pub struct ListIterMut<'a, T> {
+    pub(crate) next: Option<&'a mut Node<T>>,
+}
+
+impl<'a, T> Iterator for ListIterMut<'a, T> {
+    type Item = &'a mut T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.next.take().map(|node| {
+            self.next = node.next.as_deref_mut();
+            &mut node.elem
+        })
+    }
+}
+
+/// An owning iterator over a `List<T>`.
+pub struct IntoListIter<T> {
+    pub(crate) current: Option<Box<Node<T>>>,
+}
+
+impl<T> Iterator for IntoListIter<T> {
+    type Item = T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.current.take().map(|node| {
+            let node = *node;
+            self.current = node.next;
+            node.elem
+        })
+    }
+}
+
+impl<T> IntoIterator for List<T> {
+    type Item = T;
+    type IntoIter = IntoListIter<T>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        IntoListIter { current: self.head }
+    }
+}
+
+impl<'a, T> IntoIterator for &'a List<T> {
+    type Item = &'a T;
+    type IntoIter = ListIter<'a, T>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
+    }
+}
+
+impl<'a, T> IntoIterator for &'a mut List<T> {
+    type Item = &'a mut T;
+    type IntoIter = ListIterMut<'a, T>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        ListIterMut {
+            next: self.head.as_deref_mut(),
+        }
     }
 }
 
