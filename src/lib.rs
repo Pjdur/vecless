@@ -163,7 +163,7 @@ impl<'a, T> Iterator for ListIterMut<'a, T> {
 
 /// An owning iterator over a `List<T>`.
 pub struct IntoListIter<T> {
-    pub(crate) current: Option<Box<Node<T>>>,
+    current: Option<Box<Node<T>>>,
 }
 
 impl<T> Iterator for IntoListIter<T> {
